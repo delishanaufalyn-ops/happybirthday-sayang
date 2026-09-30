@@ -549,6 +549,16 @@ function showPage(n,push=true){
   const id=Number(n);
   const video=document.getElementById('birthdayVideo');
 
+  // Viewer foto hanya boleh aktif saat halaman 6 sedang terbuka.
+  // Jika berpindah ke halaman lain, selalu tutup viewer terlebih dahulu.
+  const photoViewer=document.getElementById('photoViewer');
+  if(photoViewer && id!==6){
+    photoViewer.classList.remove('open');
+    photoViewer.setAttribute('aria-hidden','true');
+    const photoCanvas=document.getElementById('photoViewerCanvas');
+    if(photoCanvas){ photoCanvas.width=1; photoCanvas.height=1; }
+  }
+
   // Hentikan dan kembalikan video saat meninggalkan halaman 4.
   if(video && id!==4){
     video.pause();
@@ -816,6 +826,7 @@ function stopFireworks(){
   }
 
   function openCrop(raw){
+    if(!page6.classList.contains('active')) return;
     const vals=raw.split(',').map(Number);
     if(vals.length!==4 || vals.some(Number.isNaN)) return;
     const [sx,sy,sw,sh]=vals;
@@ -843,6 +854,8 @@ function stopFireworks(){
   page6.querySelectorAll('.photo-hotspot').forEach(btn=>{
     btn.addEventListener('click',e=>{
       e.stopPropagation();
+      // Jangan buka foto jika halaman 6 bukan halaman yang sedang aktif.
+      if(!page6.classList.contains('active')) return;
       openCrop(btn.dataset.crop);
     });
   });
