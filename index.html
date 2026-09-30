@@ -175,7 +175,7 @@ body{display:flex;align-items:center;justify-content:center;font-family:Arial,sa
 #birthdayVideo::-webkit-media-controls{
   z-index:35;
 }
-@media (min-width:900px){.app{border-radius:10px}
+@media (min-width:900px){.app{border-radius:10px}}
 @media (max-width:600px){.app{width:100vw;height:100vh}}
 
 /* ===== API LILIN — RINGAN & KOMPATIBEL ANDROID ===== */
@@ -328,6 +328,89 @@ body{display:flex;align-items:center;justify-content:center;font-family:Arial,sa
   .applause{font-size:clamp(32px,10vw,48px);}
 }
 
+
+/* ===== OPTIMASI ANIMASI MOBILE/ANDROID ===== */
+#page1 .flame-wrap{
+  display:block!important;
+  visibility:visible!important;
+  animation-play-state:running!important;
+  -webkit-animation-play-state:running!important;
+  transform:translate3d(-50%,0,0);
+  -webkit-transform:translate3d(-50%,0,0);
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+}
+#page1 .flame-glow,
+#page1 .flame-outer,
+#page1 .flame-inner,
+#page1 .flame-tip{
+  display:block!important;
+  visibility:visible!important;
+  animation-play-state:running!important;
+  -webkit-animation-play-state:running!important;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+}
+#page2 .fireworks-canvas{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  z-index:60!important;
+  transform:translate3d(0,0,0);
+  -webkit-transform:translate3d(0,0,0);
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  will-change:contents;
+}
+#page2 .applause-wrap{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  z-index:61!important;
+  transform:translateZ(0);
+  -webkit-transform:translateZ(0);
+}
+#page2 .applause{
+  display:block!important;
+  visibility:visible!important;
+  animation-play-state:running!important;
+  -webkit-animation-play-state:running!important;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+}
+@media (max-width:600px){
+  #page1 .flame-wrap{width:9%;height:10%;top:25.3%;}
+  #page2 .fireworks-canvas{z-index:60!important;}
+  #page2 .applause-wrap{top:23%;height:25%;}
+  #page2 .applause{font-size:clamp(36px,12vw,58px);}
+}
+
+/* ===== FOTO HALAMAN 6: KETUK UNTUK MEMBESAR ===== */
+#page6 .photo-hotspots{
+  position:absolute;inset:0;z-index:35;pointer-events:none;
+}
+#page6 .photo-hotspot{
+  position:absolute;display:block;padding:0;border:0;background:transparent;
+  border-radius:8px;pointer-events:auto;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+#page6 .photo-hotspot:active{transform:scale(.98);}
+.photo-viewer{
+  position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;
+  padding:4vh 5vw;background:rgba(0,0,0,.78);touch-action:manipulation;
+}
+.photo-viewer.open{display:flex;}
+.photo-viewer canvas{
+  display:block;max-width:90vw;max-height:88vh;width:auto;height:auto;
+  border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,.55);
+  background:#fff;
+}
+.photo-viewer .photo-hint{
+  position:absolute;left:0;right:0;bottom:2.2vh;text-align:center;color:#fff;
+  font:600 14px/1.2 system-ui,-apple-system,'Segoe UI',sans-serif;
+  text-shadow:0 1px 4px #000;pointer-events:none;
+}
+
 </style>
 </head>
 <body>
@@ -406,8 +489,24 @@ body{display:flex;align-items:center;justify-content:center;font-family:Arial,sa
 
 
 <button class="hotspot p6-back" type="button" data-go="3" aria-label="Back ke halaman 3"></button>
+
+<div class="photo-hotspots" aria-label="Foto kenangan yang dapat diketuk">
+  <button class="photo-hotspot" style="left:18%;top:27.2%;width:38%;height:12.5%;" data-crop="160,425,320,185" aria-label="Buka foto keluarga"></button>
+  <button class="photo-hotspot" style="left:54%;top:24%;width:29%;height:16%;" data-crop="475,375,230,235" aria-label="Buka foto masa kecil"></button>
+  <button class="photo-hotspot" style="left:6%;top:39%;width:27%;height:14.5%;" data-crop="60,600,215,215" aria-label="Buka foto keluarga"></button>
+  <button class="photo-hotspot" style="left:7%;top:52.5%;width:27%;height:8%;" data-crop="70,810,205,125" aria-label="Buka foto bersama anak"></button>
+  <button class="photo-hotspot" style="left:31%;top:39%;width:38%;height:22%;" data-crop="270,600,325,335" aria-label="Buka foto ibu dan anak"></button>
+  <button class="photo-hotspot" style="left:68%;top:39%;width:30%;height:10%;" data-crop="590,600,250,145" aria-label="Buka foto keluarga"></button>
+  <button class="photo-hotspot" style="left:68%;top:48%;width:24%;height:13%;" data-crop="590,735,200,200" aria-label="Buka foto pernikahan"></button>
+  <button class="photo-hotspot" style="left:18%;top:60%;width:27%;height:15%;" data-crop="160,925,225,230" aria-label="Buka foto ibu dan anak"></button>
+  <button class="photo-hotspot" style="left:43%;top:60%;width:35%;height:12%;" data-crop="375,925,295,170" aria-label="Buka foto keluarga"></button>
+</div>
 </section>
 
+<div class="photo-viewer" id="photoViewer" aria-hidden="true">
+  <canvas id="photoViewerCanvas"></canvas>
+  <div class="photo-hint">Ketuk di luar foto untuk kembali</div>
+</div>
 <div class="effects" id="effects"></div>
 <div class="shine"></div>
 </main>
@@ -699,6 +798,64 @@ function stopFireworks(){
   if(fwCtx && fireworksCanvas) fwCtx.clearRect(0,0,fireworksCanvas.clientWidth,fireworksCanvas.clientHeight);
 }
 
+
+/* ===== FOTO HALAMAN 6: VIEWER FOTO PER FOTO ===== */
+(function(){
+  const page6=document.getElementById('page6');
+  const viewer=document.getElementById('photoViewer');
+  const canvas=document.getElementById('photoViewerCanvas');
+  if(!page6 || !viewer || !canvas) return;
+  const source=page6.querySelector('img');
+  const ctx=canvas.getContext('2d');
+  if(!source || !ctx) return;
+
+  function closeViewer(){
+    viewer.classList.remove('open');
+    viewer.setAttribute('aria-hidden','true');
+    canvas.width=1; canvas.height=1;
+  }
+
+  function openCrop(raw){
+    const vals=raw.split(',').map(Number);
+    if(vals.length!==4 || vals.some(Number.isNaN)) return;
+    const [sx,sy,sw,sh]=vals;
+    const iw=source.naturalWidth || 864;
+    const ih=source.naturalHeight || 1536;
+    const x=Math.max(0,Math.min(sx,iw-1));
+    const y=Math.max(0,Math.min(sy,ih-1));
+    const w=Math.max(1,Math.min(sw,iw-x));
+    const h=Math.max(1,Math.min(sh,ih-y));
+
+    const maxW=Math.min(window.innerWidth*.88,560);
+    const maxH=Math.min(window.innerHeight*.78,760);
+    const scale=Math.min(maxW/w,maxH/h);
+    canvas.width=Math.max(1,Math.round(w*scale));
+    canvas.height=Math.max(1,Math.round(h*scale));
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.imageSmoothingEnabled=true;
+    ctx.imageSmoothingQuality='high';
+    ctx.drawImage(source,x,y,w,h,0,0,canvas.width,canvas.height);
+
+    viewer.classList.add('open');
+    viewer.setAttribute('aria-hidden','false');
+  }
+
+  page6.querySelectorAll('.photo-hotspot').forEach(btn=>{
+    btn.addEventListener('click',e=>{
+      e.stopPropagation();
+      openCrop(btn.dataset.crop);
+    });
+  });
+
+  viewer.addEventListener('click',e=>{
+    if(e.target===viewer) closeViewer();
+  });
+  viewer.addEventListener('touchend',e=>{
+    if(e.target===viewer){e.preventDefault();closeViewer();}
+  },{passive:false});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape') closeViewer();});
+})();
+
 document.addEventListener('visibilitychange',()=>{
   if(document.hidden){
     if(fwAnim){cancelAnimationFrame(fwAnim);fwAnim=null;}
@@ -712,6 +869,7 @@ document.addEventListener('visibilitychange',()=>{
 
 const initial=Number((location.hash||'#p0').slice(2));
 showPage(initial>=0&&initial<=6?initial:0,false);
+requestAnimationFrame(()=>{ if((initial>=0&&initial<=6?initial:0)===2){ resizeFireworks(); } });
 </script>
 </body>
 </html>
